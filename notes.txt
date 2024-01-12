@@ -1,0 +1,127 @@
+#include <iostream>
+#include <functional>
+using namespace std::placeholders;
+
+void print(int x, int y, int z)
+{
+    std::cout<<"Globel Function"<<std::endl;
+    std::cout << x << " " << y << " " << z << std::endl;
+}
+
+class demo
+{
+public:
+    void print(int x, int y, int z)
+    {
+        std::cout<<"Member Function"<<std::endl;
+        std::cout << x << " " << y << " " << z << std::endl;
+    }
+};
+int main()
+{
+    demo obj;
+    auto func = std::bind(&demo::print,&obj, 100, _1, _3);
+    func(10, 20, 30);
+    return 0;
+}
+
+/* 
+Container data;
+auto fn=std::bind(SalaryGivenId,_1,100);
+fn(data);
+*/
+
+extern std::function<float(Container&)> AverageSalary;
+
+extern std::function<float(Container&)> AverageSalary=[](Container& data)
+{
+    float total=0.0f;
+
+    for(Pointer& ptr:data)
+    {
+        total+=ptr->salary();
+    }
+return total/3;
+};
+
+
+
+
+-----------------------------------------------------------
+
+
+--------------------------------------------------
+
+#include<iostream>
+#include<memory>
+#include<functional>
+
+using namespace std::placeholders;
+class B
+{
+    private:
+    std::string name;
+    public:
+    B()
+    {
+
+    }
+    B(std::string name):name(name)
+    {
+
+    }
+
+    friend std::ostream &operator<<(std::ostream &os, const B &rhs);
+
+};
+
+
+class A
+{
+private:
+int _id;
+std::reference_wrapper<std::shared_ptr<B>> b;
+public:
+A()=default;
+A(int id,std::reference_wrapper<std::shared_ptr<B>> _b):_id(id),b(_b)
+{
+
+}
+
+void print(int id,int id2){
+    std::cout<<"\n id : "<<id<<"\n id2 : "<<id2<<"\n";
+}
+
+friend std::ostream &operator<<(std::ostream &os, const A &rhs);
+};
+
+
+
+int main()
+{
+    std::vector<std::shared_ptr<A>> container;
+    std::shared_ptr<B> a = std::make_shared<B>("name");
+    std::shared_ptr<A> obj=std::make_shared<A>(101,std::ref(a));
+    A obj2(22,a);
+    auto partial_fun = std::bind(&A::print,&obj2,_2,10);
+    partial_fun(1,2);
+    std::cout<<obj;
+    container.emplace_back(obj);
+    std::cout<<"---"<<*container[0];
+    return 0;
+}
+
+inline std::ostream &operator<<(std::ostream &os, const B &rhs) {
+    os << "name: " << rhs.name;
+    return os;
+}
+
+inline std::ostream &operator<<(std::ostream &os, const A &rhs) {
+    os << "_id: " << rhs._id
+       << " b: " << *(rhs.b.get());
+    return os;
+}
+
+std::future highest=std::async(std::launch::async,id_of_highest_discount,obj);
+
+
